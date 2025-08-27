@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Dashboard</h1>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('main.dashboard') }}" class="row g-3 align-items-center">
+            <div class="col-md-5">
+                <input type="text" name="q" class="form-control" placeholder="Search by name or description..." value="{{ q or '' }}">
+            </div>
+            <div class="col-md-2">
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="Lost" {% if filter_status == 'Lost' %}selected{% endif %}>Lost</option>
+                    <option value="Found" {% if filter_status == 'Found' %}selected{% endif %}>Found</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                 <select name="claim" class="form-select">
+                    <option value="">All Items</option>
+                    <option value="unclaimed" {% if filter_claim == 'unclaimed' %}selected{% endif %}>Unclaimed</option>
+                    <option value="claimed" {% if filter_claim == 'claimed' %}selected{% endif %}>Claimed</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-grid gap-2 d-md-block">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Filter</button>
+                <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Reset</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for item in items %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <img src="{{ url_for('static', filename='uploads/' + item.image if item.image else 'uploads/placeholder.png') }}" class="card-img-top" alt="{{ item.name }}" onerror="this.onerror=null;this.src='{{ url_for('static', filename='uploads/placeholder.png') }}';">
+            <div class="card-body">
+                <h5 class="card-title">{{ item.name }}</h5>
+                <p class="card-text">{{ item.description[:100] }}{% if item.description|length > 100 %}...{% endif %}</p>
+                <span class="badge bg-{{ 'danger' if item.status == 'Lost' else 'success' }}">{{ item.status }}</span>
+                <span class="badge bg-{{ 'warning' if item.claimed else 'info' }}">{{ 'Claimed' if item.claimed else 'Unclaimed' }}</span>
+            </div>
+            <div class="card-footer bg-white border-top-0">
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('main.item_detail', item_id=item.id) }}" class="btn btn-sm btn-outline-secondary">View Details</a>
+                    <small class="text-muted">By: {{ item.owner.username }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <p class="text-center text-muted">No items found matching your criteria.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

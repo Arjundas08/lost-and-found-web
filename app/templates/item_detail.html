@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <img src="{{ url_for('static', filename='uploads/' + item.image if item.image else 'uploads/placeholder.png') }}" class="card-img-top" alt="{{ item.name }}" style="max-height: 500px; object-fit: contain; padding: 1rem;">
+            <div class="card-body">
+                <h1 class="card-title">{{ item.name }}</h1>
+                <p class="card-text">{{ item.description }}</p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Status:</strong> <span class="badge bg-{{ 'danger' if item.status == 'Lost' else 'success' }}">{{ item.status }}</span></li>
+                <li class="list-group-item"><strong>Claim Status:</strong> <span class="badge bg-{{ 'warning' if item.claimed else 'info' }}">{{ 'Claimed' if item.claimed else 'Unclaimed' }}</span></li>
+                <li class="list-group-item"><strong>Posted By:</strong> {{ item.owner.username }}</li>
+                <li class="list-group-item"><strong>Posted On:</strong> {{ item.date_posted.strftime('%Y-%m-%d %H:%M') }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-4">
+        {% if current_user.is_authenticated and current_user == item.owner %}
+        <div class="card">
+            <div class="card-header">
+                Actions
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('main.edit_item', item_id=item.id) }}" class="btn btn-info w-100 mb-2"><i class="bi bi-pencil-square"></i> Edit Item</a>
+                {% if not item.claimed %}
+                <a href="{{ url_for('main.claim_item', item_id=item.id) }}" class="btn btn-warning w-100 mb-2">Mark as Claimed</a>
+                {% else %}
+                <a href="{{ url_for('main.unclaim_item', item_id=item.id) }}" class="btn btn-secondary w-100 mb-2">Mark as Unclaimed</a>
+                {% endif %}
+                <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="bi bi-trash"></i> Delete Item
+                </button>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to permanently delete this item? This action cannot be undone.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="{{ url_for('main.delete_item', item_id=item.id) }}" method="POST">
+            <input type="submit" class="btn btn-danger" value="Delete">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
