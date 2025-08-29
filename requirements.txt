@@ -5,3 +5,4 @@ Flask-WTF
 Werkzeug
 python-dotenv
 email_validator
+gunicorn
