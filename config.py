@@ -16,4 +16,4 @@ class Config:
 class DevelopmentConfig(Config):
     """Development configuration."""
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URL", "sqlite:///data_dev.db")
+    SQLALCHEMY_DATABASE_URI = os.environ.get('postgresql://lost_and_found_db_6eu5_user:rKmaHFkuzmHKXMahEkJzJQ9pCkLfxDoo@dpg-d2oqka8gjchc73f3fvg0-a/lost_and_found_db_6eu5')
