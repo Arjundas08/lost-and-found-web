@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: arjundas-lost-and-found-web
+    name: arjundas-lost-and-found-web   # <-- Make sure this name is correct
     runtime: python
     buildCommand: "pip install -r requirements.txt"
     startCommand: "gunicorn run:app"
@@ -8,8 +8,9 @@ services:
       - key: PYTHON_VERSION
         value: 3.11.4
       - key: SECRET_KEY
-        sync: false
+        # IMPORTANT: PASTE YOUR ACTUAL SECRET KEY BELOW
+        value: 'your-real-secret-key-goes-here'
       - key: DATABASE_URL
         fromDatabase:
-          name: lost-and-found-db
+          name: lost-and-found-db   # <-- Make sure this name is correct
           property: internalDatabaseUrl
