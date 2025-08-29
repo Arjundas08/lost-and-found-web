@@ -4,6 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from config import DevelopmentConfig
 import os
+import os # This might already be there
+
+# ---- TEMPORARY DEBUG CODE ----
+print("---- CHECKING ENVIRONMENT ----")
+database_url_from_env = os.environ.get('postgresql://lost_and_found_db_6eu5_user:rKmaHFkuzmHKXMahEkJzJQ9pCkLfxDoo@dpg-d2oqka8gjchc73f3fvg0-a/lost_and_found_db_6eu5')
+print(f"The DATABASE_URL Render sees is: {database_url_from_env}")
+# --------------------------------
 
 db = SQLAlchemy()
 login_manager = LoginManager()
